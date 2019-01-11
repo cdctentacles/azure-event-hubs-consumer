@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs
+/EventHubsConsumer/.vs
+/EventHubsConsumer/EventHubsConsumer/bin
+/EventHubsConsumer/EventHubsConsumer/obj
