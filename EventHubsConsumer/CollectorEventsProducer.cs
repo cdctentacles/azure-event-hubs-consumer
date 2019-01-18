@@ -2,20 +2,49 @@
 using System.Collections.Generic;
 using System.Text;
 using CDC.EventCollector;
+using Microsoft.Azure.EventHubs;
+using Microsoft.Azure.EventHubs.Processor;
 
 namespace EventHubsConsumer
 {
-    class CollectorEventsProducer
+    public class CollectorEventsProducer : Source
     {
-        IEventCollector CDCCollector;
-
-        public CollectorEventsProducer()
+        public CollectorEventsProducer(IEventCollector collector, IHealthStore healthStore) :
+        base(collector, healthStore)
         {
-            var sourceFactories = new List<ISourceFactory>();
-            var persistentCollectors = new List<IPersistentCollector>();
-            var conf = new Configuration(sourceFactories, persistentCollectors)
-                    .SetHealthStore(new TestHealthStore());
-            CDCCollector.AddConfiguration(conf);
+            this.Id = new Guid();
+            this.collector = collector;
         }
+
+        public override Guid GetSourceId()
+        {
+            return this.Id;
+        }
+
+        public override ITransactionalLog GetTransactionalLog()
+        {
+            return null;
+        }
+
+        public IEventCollector Collector
+        {
+            get { return this.collector; }
+        }
+
+        public void StartEventProcessor()
+        {
+            var eventProcessorHost = new EventProcessorHost(
+                EventHubName,
+                PartitionReceiver.DefaultConsumerGroupName,
+                EventHubConnectionString,
+                StorageConnectionString,
+                StorageContainerName);
+
+            // Registers the Event Processor Host and starts receiving messages
+            await eventProcessorHost.RegisterEventProcessorAsync<SimpleEventProcessor>();
+        }
+
+        Guid Id;
+        private IEventCollector collector;
     }
 }
