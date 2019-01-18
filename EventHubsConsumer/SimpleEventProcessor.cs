@@ -9,6 +9,10 @@ namespace EventHubsConsumer
 {
     public class SimpleEventProcessor : IEventProcessor
     {
+        public SimpleEventProcessor()
+        {
+            IEventCollector eventCollector = CollectorEventsProducer();
+        }
         public Task CloseAsync(PartitionContext context, CloseReason reason)
         {
             Console.WriteLine($"Processor Shutting Down. Partition '{context.PartitionId}', Reason: '{reason}'.");
