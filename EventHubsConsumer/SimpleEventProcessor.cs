@@ -4,11 +4,15 @@ using System.Text;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.EventHubs.Processor;
 using System.Threading.Tasks;
+using CDC.EventCollector;
 
 namespace EventHubsConsumer
 {
     public class SimpleEventProcessor : IEventProcessor
     {
+        private IEventCollector collector;
+
+        public SimpleEventProcessor(PartitionContext context, IEventCollector collector) => this.collector = collector;
         public Task CloseAsync(PartitionContext context, CloseReason reason)
         {
             Console.WriteLine($"Processor Shutting Down. Partition '{context.PartitionId}', Reason: '{reason}'.");
