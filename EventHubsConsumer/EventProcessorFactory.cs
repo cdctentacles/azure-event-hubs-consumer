@@ -5,7 +5,6 @@ using CDC.EventCollector;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.EventHubs.Processor;
 
-
 namespace EventHubsConsumer
 {
     class EventProcessorFactory : IEventProcessorFactory

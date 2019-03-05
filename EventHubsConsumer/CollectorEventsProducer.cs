@@ -9,18 +9,12 @@ namespace EventHubsConsumer
 {
     public class CollectorEventsProducer : Source
     {
-        private const string EventHubConnectionString = "{Event Hubs connection string}";
-        private const string EventHubName = "{Event Hub path/name}";
-        private const string StorageContainerName = "{Storage account container name}";
-        private const string StorageAccountName = "{Storage account name}";
-        private const string StorageAccountKey = "{Storage account key}";
-
-        private static readonly string StorageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", StorageAccountName, StorageAccountKey);
-        public CollectorEventsProducer(IEventCollector collector, IHealthStore healthStore) :
+        public CollectorEventsProducer(IEventCollector collector, IHealthStore healthStore, EventHubsConfiguration conf) :
         base(collector, healthStore)
         {
             this.Id = new Guid();
             this.collector = collector;
+            this.conf = conf;
         }
 
         public override Guid GetSourceId()
@@ -41,11 +35,12 @@ namespace EventHubsConsumer
         public async void StartEventProcessor()
         {
             var eventProcessorHost = new EventProcessorHost(
-                EventHubName,
+                conf.HubName,
                 PartitionReceiver.DefaultConsumerGroupName,
-                EventHubConnectionString,
-                StorageConnectionString,
-                StorageContainerName);
+                conf.ConnectionString,
+                string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", conf.AccountName, conf.AccountKey),
+                conf.ContainerName
+            );
 
             this.eventProcessorHost = eventProcessorHost;
 
@@ -62,6 +57,7 @@ namespace EventHubsConsumer
 
         Guid Id;
         private IEventCollector collector;
+        private readonly EventHubsConfiguration conf;
         private EventProcessorHost eventProcessorHost;
     }
 }
