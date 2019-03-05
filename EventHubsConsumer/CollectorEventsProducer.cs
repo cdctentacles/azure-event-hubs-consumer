@@ -46,10 +46,10 @@ namespace EventHubsConsumer
 
             // Registers the Event Processor Host and starts receiving messages
             // https://stackoverflow.com/questions/33371803/how-to-pass-parameters-to-an-implementation-of-ieventprocessor
-            await eventProcessorHost.RegisterEventProcessorFactoryAsync(new EventProcessorFactory(collector));
+            await eventProcessorHost.RegisterEventProcessorFactoryAsync(new EventProcessorFactory(collector, GetSourceId()));
         }
 
-        public async void CloseEventProcessor()
+        public async void StopEventProcessor()
         {
             // Disposes of the Event Processor Host
             await eventProcessorHost.UnregisterEventProcessorAsync();

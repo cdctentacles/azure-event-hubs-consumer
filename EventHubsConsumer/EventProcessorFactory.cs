@@ -10,15 +10,17 @@ namespace EventHubsConsumer
     class EventProcessorFactory : IEventProcessorFactory
     {
         private IEventCollector collector;
+        private Guid id;
 
-        public EventProcessorFactory(IEventCollector collector)
+        public EventProcessorFactory(IEventCollector collector, Guid Id)
         {
             this.collector = collector;
+            this.id = Id;
         }
 
         IEventProcessor IEventProcessorFactory.CreateEventProcessor(PartitionContext context)
         {
-            return new SimpleEventProcessor(context, collector);
+            return new SimpleEventProcessor(context, collector, id);
         }
     }
 }

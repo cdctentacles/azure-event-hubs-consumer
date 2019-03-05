@@ -11,8 +11,14 @@ namespace EventHubsConsumer
     public class SimpleEventProcessor : IEventProcessor
     {
         private IEventCollector collector;
+        private Guid id;
+        private long lsn = 0;
 
-        public SimpleEventProcessor(PartitionContext context, IEventCollector collector) => this.collector = collector;
+        public SimpleEventProcessor(PartitionContext context, IEventCollector collector, Guid Id)
+        {
+            this.collector = collector;
+            this.id = Id;
+        } 
         public Task CloseAsync(PartitionContext context, CloseReason reason)
         {
             Console.WriteLine($"Processor Shutting Down. Partition '{context.PartitionId}', Reason: '{reason}'.");
@@ -37,7 +43,8 @@ namespace EventHubsConsumer
             {
                 var data = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
                 Console.WriteLine($"Message received. Partition: '{context.PartitionId}', Data: '{data}'");
-                collector.TransactionApplied(Guid:, lsn:, byte[]);
+                var dataBytes = Encoding.ASCII.GetBytes(data);
+                collector.TransactionApplied(id, lsn++, dataBytes);
             }
 
             return context.CheckpointAsync();
