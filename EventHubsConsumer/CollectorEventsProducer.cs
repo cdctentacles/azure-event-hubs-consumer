@@ -15,6 +15,7 @@ namespace EventHubsConsumer
             this.Id = new Guid();
             this.collector = collector;
             this.conf = conf;
+            this.StartEventProcessor();
         }
 
         public override Guid GetSourceId()

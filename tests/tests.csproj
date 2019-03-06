@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EventHubsConsumer\EventHubsConsumer.csproj" />
+    <ProjectReference Include="..\..\eventcollector\src\eventcollector.csproj" />
   </ItemGroup>
 
 </Project>
